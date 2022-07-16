@@ -3,7 +3,7 @@ import constants
 from typing import Optional, List
 
 # generate a random genome
-def gen_rand_genome(
+def gen_genome(
     size: Optional[int] = None,
     nucs: Optional[List[str]] = None,
     rng: Optional[np.random._generator.Generator] = None
@@ -21,7 +21,27 @@ def gen_rand_genome(
     size = constants.DEFAULT_GENOME_SIZE if size is None else size
     nucs = constants.DEFAULT_NUCS if nucs is None else nucs
     rng = constants.DEFAULT_RNG if rng is None else rng
-    # define tracking string
-    return "".join(rng.choice(nucs, size=size, replace=True))
+    # compute genome
+    genome = "".join(rng.choice(nucs, size=size, replace=True))
+    return genome
 
-print(gen_rand_genome())
+# generate a random frame for a trait
+def gen_frame(
+    size: int,
+    rng: Optional[np.random._generator.Generator] = None
+) -> List[int]:
+    """
+    generates a random frame for a given trait
+    the max value that it can be is size
+    it is a uniform distribution from 0
+    
+    @param size = max value to sample
+    @param rng = random number generator to sample using
+    @returns frame = start and end to sample for this gene
+    """
+    # configure parameters
+    rng = constants.DEFAULT_RNG if rng is None else rng
+    # compute frame
+    idxs = rng.integers(low=0, high=size, endpoint=True, size=2)
+    frame = (min(idxs), max(idxs))
+    return frame
