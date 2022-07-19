@@ -10,7 +10,7 @@ class Cell:
         ideal_seqs: Dict[str, str],
         traits: List[str],
         trait2frame: Optional[Dict[str, Tuple[int, int]]] = None,
-        genome: Optional[str] = None
+        genome: Optional[str] = None,
     ):
         # genome
         self.genome = utils.gen_genome() if genome is None else genome

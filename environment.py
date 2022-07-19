@@ -11,8 +11,9 @@ IDEAL_SEQS = {
 
 # create cells
 cells = [cell.Cell(traits=constants.CELL_TRAITS, ideal_seqs=IDEAL_SEQS) for _ in range(5)]
-perc_res = 10
-n_children = 100
+perc_res = 500
+n_children = 500
+n_filter = 100
 for perc in range(perc_res):
     print(f"now filtering for {perc / perc_res}...")
     # mutate this round
@@ -33,7 +34,7 @@ for perc in range(perc_res):
                 new_cells.append((mut_obj, mut_obj.get_trait_score(trait="digest")))
     # reset with the passing cells
     new_cells = sorted(new_cells, key=lambda row: row[1], reverse=True)
-    cells = [row[0] for row in new_cells[:10]]
+    cells = [row[0] for row in new_cells[:n_filter]]
     del new_cells
     for obj in cells:
         start, end = obj.get_trait_frame(trait="digest")
