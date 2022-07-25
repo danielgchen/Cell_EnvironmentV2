@@ -3,7 +3,7 @@ import numpy as np
 # nucleotides in the genome
 DEFAULT_NUCS = ["A","C","G","T"]
 # size of the genome to create
-DEFAULT_GENOME_SIZE = 50
+DEFAULT_GENOME_SIZE = 115
 # random number generator
 DEFAULT_RNG = np.random.default_rng(0)
 # chance for a mutation to be an indel
