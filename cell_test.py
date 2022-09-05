@@ -5,11 +5,11 @@ class CellTests(unittest.TestCase):
     # set up the cell for testing
     def setUp(self) -> None:
         # define ideal sequences
-        self.ideal_seqs = {"a": "AAACCCTTTGGG", "b": "AACCTTGG", "c": "ACTG"}
+        self.ideal_seqs = {"mutate": "AAACCCTTTGGG", "b": "AACCTTGG", "c": "ACTG"}
         # define traits
-        self.traits = ["a", "b", "c"]
+        self.traits = ["mutate", "b", "c"]
         # define traits to frame
-        self.trait2frame = {"a": (0, 10), "b": (10, 20), "c": (20, 30)}
+        self.trait2frame = {"mutate": (0, 10), "b": (10, 20), "c": (20, 30)}
         # define genome
         self.genome = "AAACCCTTTGGGAAACCCTTTGGGAACCTTGGAACCTTGGACTGACTG"
         # define the cell
@@ -22,7 +22,43 @@ class CellTests(unittest.TestCase):
         # define the expected genome size
         self.genome_size = 48
         # define the expected trait scores
-        self.trait2score = {'a': 0.8333333333333334, 'b': 0.25, 'c': 0}
+        self.trait2score = {"mutate": 0.8333333333333334, "b": 0.25, "c": 0}
+        # define the expected mutated genome
+        self.mut_genome = "GGACCTACAGTTTCTATGGAAAATATTGTCTGAGATAAGAATTACGTC"
+        # define the expected mutate trait frame
+        self.mut_frame_trait = "mutate"
+        self.mut_frame_trait_frame = (-3, 12)
+        # define the expected mutate self result
+        self.mut_self_kwargs = {"genome": "ATTCCAACTGACAGGAATAAGGACTGTCAGGGTCTCCGCGGATCAAGGA",
+                                "trait2frame": {"mutate": (21, 44),
+                                                "b": (9, 21),
+                                                "c": (-9, 79)}}
+        # define inputs for calc_trait_score testing
+        self.calc_trait_score_trait = "mutate"
+        self.calc_trait_score_ideal_seq = "AAAAAAAA"
+        self.calc_trait_score_trait_score = 0.125
+
+    # test calculation functions
+    def test_calc_trait_score(self) -> None:
+        self.cell.calc_trait_score(
+            trait=self.calc_trait_score_trait,
+            ideal_seq=self.calc_trait_score_ideal_seq
+        )
+        trait_score = self.cell.get_trait_score(trait=self.calc_trait_score_trait)
+        self.assertEqual(trait_score, self.calc_trait_score_trait_score)
+
+    # test mutation functions
+    def test_mut_genome(self) -> None:
+        mut_genome = self.cell.mut_genome()
+        self.assertEqual(mut_genome, self.mut_genome)
+
+    def test_mut_frame(self) -> None:
+        mut_frame = self.cell.mut_frame(trait=self.mut_frame_trait)
+        self.assertEqual(mut_frame, self.mut_frame_trait_frame)
+
+    def test_mut_self(self) -> None:
+        kwargs = self.cell.mut_self()
+        self.assertEqual(kwargs, self.mut_self_kwargs)
 
     # test get functions
     def test_genome(self) -> None:
