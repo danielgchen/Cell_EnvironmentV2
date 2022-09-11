@@ -8,4 +8,14 @@
     ],
     "python.testing.pytestEnabled": false,
     "python.testing.unittestEnabled": true,
+    "editor.rulers": [
+        80, 88, 100
+    ],
+    "[python]": {
+        "editor.defaultFormatter": "ms-python.black-formatter",
+        "editor.formatOnSave": true
+    },
+    "python.analysis.extraPaths": [
+        "/Users/danielgchen/anaconda3/envs/base_py37/lib/python3.7/site-packages/"
+    ],
 }

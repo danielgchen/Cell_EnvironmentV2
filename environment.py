@@ -2,8 +2,33 @@ import utils
 import constants
 import cell
 from typing import Dict
+# import packages
+from tkinter import *
+from tkinter import ttk
+import time
 
-# define ideal sequences
+# create tkinter based canvas
+def create_canvas():
+    # instantiate application window
+    window = Tk()
+    # name application window
+    window.title(constants.WINDOW_NAME)
+    # let it fill empty space (we have 1 row, 1 col)
+    window.columnconfigure(0, weight=1)
+    window.rowconfigure(0, weight=1)
+    # create the canvas
+    canvas = Canvas(
+        window,
+        width=constants.WINDOW_WIDTH,
+        height=constants.WINDOW_HEIGHT,
+        background=constants.BKGD_COLOR
+    )
+    # start from middle centered to the upper left (in param sticky)
+    canvas.grid(column=0, row=0, sticky=NW)
+    return window, canvas
+
+
+# create ideal sequences
 def create_ideal_seqs():
     """
     instantiates ideal sequences based on gene sizes defined in constants

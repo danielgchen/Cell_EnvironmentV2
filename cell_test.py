@@ -1,6 +1,7 @@
 import unittest
 import cell
 
+
 class CellTests(unittest.TestCase):
     # set up the cell for testing
     def setUp(self) -> None:
@@ -17,7 +18,7 @@ class CellTests(unittest.TestCase):
             ideal_seqs=self.ideal_seqs,
             traits=self.traits,
             trait2frame=self.trait2frame,
-            genome=self.genome
+            genome=self.genome,
         )
         # define the expected genome size
         self.genome_size = 48
@@ -29,10 +30,10 @@ class CellTests(unittest.TestCase):
         self.mut_frame_trait = "mutate"
         self.mut_frame_trait_frame = (-3, 12)
         # define the expected mutate self result
-        self.mut_self_kwargs = {"genome": "ATTCCAACTGACAGGAATAAGGACTGTCAGGGTCTCCGCGGATCAAGGA",
-                                "trait2frame": {"mutate": (21, 44),
-                                                "b": (9, 21),
-                                                "c": (-9, 79)}}
+        self.mut_self_kwargs = {
+            "genome": "ATTCCAACTGACAGGAATAAGGACTGTCAGGGTCTCCGCGGATCAAGGA",
+            "trait2frame": {"mutate": (21, 44), "b": (9, 21), "c": (-9, 79)},
+        }
         # define inputs for calc_trait_score testing
         self.calc_trait_score_trait = "mutate"
         self.calc_trait_score_ideal_seq = "AAAAAAAA"
@@ -41,8 +42,7 @@ class CellTests(unittest.TestCase):
     # test calculation functions
     def test_calc_trait_score(self) -> None:
         self.cell.calc_trait_score(
-            trait=self.calc_trait_score_trait,
-            ideal_seq=self.calc_trait_score_ideal_seq
+            trait=self.calc_trait_score_trait, ideal_seq=self.calc_trait_score_ideal_seq
         )
         trait_score = self.cell.get_trait_score(trait=self.calc_trait_score_trait)
         self.assertEqual(trait_score, self.calc_trait_score_trait_score)
@@ -84,5 +84,3 @@ class CellTests(unittest.TestCase):
         for trait in traits:
             trait_score = self.cell.get_trait_score(trait=trait)
             self.assertEqual(trait_score, self.trait2score[trait])
-
-    

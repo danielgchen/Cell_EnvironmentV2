@@ -6,7 +6,7 @@ from typing import Optional, List
 def gen_genome(
     size: Optional[int] = None,
     nucs: Optional[List[str]] = None,
-    rng: Optional[np.random._generator.Generator] = None
+    rng: Optional[np.random._generator.Generator] = None,
 ) -> str:
     """
     generates a random genome with a supplied size or
@@ -25,16 +25,16 @@ def gen_genome(
     genome = "".join(rng.choice(nucs, size=size, replace=True))
     return genome
 
+
 # generate a random frame for a trait
 def gen_frame(
-    size: int,
-    rng: Optional[np.random._generator.Generator] = None
+    size: int, rng: Optional[np.random._generator.Generator] = None
 ) -> List[int]:
     """
     generates a random frame for a given trait
     the max value that it can be is size
     it is a uniform distribution from 0
-    
+
     @param size = max value to sample
     @param rng = random number generator to sample using
     @returns frame = start and end to sample for this gene
@@ -46,10 +46,10 @@ def gen_frame(
     frame = (min(idxs), max(idxs))
     return frame
 
+
 # generate a mutation type
 def gen_mut_type(
-    threshold: float,
-    rng: Optional[np.random._generator.Generator] = None
+    threshold: float, rng: Optional[np.random._generator.Generator] = None
 ) -> Optional[str]:
     """
     generate a mutation type based on the chance of overcoming
@@ -68,14 +68,14 @@ def gen_mut_type(
         elif rand_value < constants.INDEL_THRESHOLD:
             return "del"
         else:
-            return "sub"   
+            return "sub"
     else:
-        return None 
+        return None
+
 
 # generate a substitution
 def gen_mut_sub(
-    curr_nuc: str,
-    rng: Optional[np.random._generator.Generator] = None
+    curr_nuc: str, rng: Optional[np.random._generator.Generator] = None
 ) -> str:
     """
     generate a substitution for the nucleotide
@@ -89,10 +89,9 @@ def gen_mut_sub(
     nuc = rng.choice(nucs, size=1)[0]
     return nuc
 
+
 # generate an insertion
-def gen_mut_ins(
-    rng: Optional[np.random._generator.Generator] = None
-) -> str:
+def gen_mut_ins(rng: Optional[np.random._generator.Generator] = None) -> str:
     """
     generates an insertion basically a random nucleotide
 
@@ -104,11 +103,12 @@ def gen_mut_ins(
     nuc = rng.choice(constants.DEFAULT_NUCS, size=1)[0]
     return nuc
 
+
 # generate a mutation
 def gen_mut(
     threshold: float,
     curr_nuc: str,
-    rng: Optional[np.random._generator.Generator] = None
+    rng: Optional[np.random._generator.Generator] = None,
 ) -> Optional[str]:
     """
     generates a mutation based on a threshold and supplies
@@ -132,15 +132,14 @@ def gen_mut(
     else:
         return curr_nuc
 
+
 # generate the mutate frame for a start or end
 def gen_mut_frame(
-    value: int,
-    threshold: int,
-    rng: Optional[np.random._generator.Generator] = None
+    value: int, threshold: int, rng: Optional[np.random._generator.Generator] = None
 ) -> int:
     """
     generates the mutated value for a frame based on its mutation rate
-    
+
     @param value = current frame value
     @param threshold = mutational trait threshold
     @param rng = random number generator

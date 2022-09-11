@@ -42,9 +42,9 @@ class Cell:
         @returns score = score from 1 to 0 of the trait
         """
         frame = self.trait2frame[trait]
-        self_seq = self.genome[frame[0]:frame[1]]
+        self_seq = self.genome[frame[0] : frame[1]]
         dist = levenshtein_distance(self_seq, ideal_seq)
-        if (dist > len(ideal_seq)):
+        if dist > len(ideal_seq):
             self.trait2score[trait] = 0
         else:
             self.trait2score[trait] = 1 - (dist / len(ideal_seq))
@@ -60,17 +60,14 @@ class Cell:
         mut_genome = ""
         for idx in range(len(self.genome)):
             curr_nuc = self.genome[idx]
-            nuc = utils.gen_mut(
-                threshold=self.trait2score["mutate"],
-                curr_nuc=curr_nuc
-            )
+            nuc = utils.gen_mut(threshold=self.trait2score["mutate"], curr_nuc=curr_nuc)
             mut_genome += nuc
         return mut_genome
 
     def mut_frame(self, trait: str) -> Tuple[int]:
         """
         mutates the reading frame for a given trait
-        
+
         @returns mut_frame = mutate frame
         """
         start = utils.gen_mut_frame(
@@ -85,7 +82,7 @@ class Cell:
     def mut_self(self) -> Dict:
         """
         mutates all attributes
-        
+
         @returns kwargs = can be used to create a new cell
         """
         mut_genome = self.mut_genome()
