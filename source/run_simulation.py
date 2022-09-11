@@ -11,7 +11,7 @@ where death is defined by the loss of all energy and biologic sustainability
 
 
 def run_simulation(
-    n_cells: int = 5,
+    n_cells: int = 1,
 ):
     """
     implementation of the program described above

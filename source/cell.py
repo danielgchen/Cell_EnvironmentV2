@@ -50,7 +50,7 @@ class Cell:
         # calculate deltas
         deltas = utils.gen_deltas(magnitude=self.move_step_size)
         # calculate new positions
-        position_hat = self.position + self.deltas
+        position_hat = self.position + deltas
         # TODO: add canvas based adjustments
         # reassign position to new positions
         self.position = position_hat

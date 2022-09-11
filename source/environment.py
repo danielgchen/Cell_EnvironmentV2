@@ -1,9 +1,8 @@
 import source.utils as utils
 import source.constants as constants
 import source.cell as cell
-from typing import Dict
-
-# import packages
+from typing import Dict, Tuple
+import time
 import tkinter
 
 # create tkinter based canvas
@@ -43,7 +42,83 @@ def create_ideal_seqs():
 
 
 # create cells
-def simulate_cells(window, canvas, n_cells: int, ideal_seqs: Dict[str, str]):
+def create_cells(
+    window: tkinter.Tk, canvas: tkinter.Canvas, n_cells: int, ideal_seqs: Dict[str, str]
+) -> Tuple:
+    """
+    creates cells for the environment and simulation
+
+    @param window = tkinter window to create a canvas in and update
+    @param canvas = tkinter canvas to draw and manipulate objects in
+    @param n_cells = number of cells to start with
+    @param ideal_seqs = the idealized sequence to compare the cells with
+    @returns cell_objects = map of cell memory id to their objects
+    @returns cell_drawings = map of cell memory id to their canvas drawings
+    """
+    # create the cells
+    cell_objects = {}
+    cell_drawings = {}
+    for _ in range(n_cells):
+        # save the cells using their memory id
+        cell_object = cell.Cell(traits=constants.CELL_TRAITS, ideal_seqs=ideal_seqs)
+        cell_id = id(cell_object)
+        cell_objects[cell_id] = cell_object
+        # retrieve cell attributes
+        position = cell_object.get_position()
+        radius = cell_object.get_radius()
+        # draw the cells
+        cell_drawing = utils.draw_circular_object(
+            canvas=canvas,
+            position=position,
+            radius=radius,
+            outline_color=constants.CELL_OUTLINE_COLOR,
+        )
+        # save the cell drawing via its memory id
+        cell_drawings[cell_id] = cell_drawing
+    # update the canvas with the cells
+    window.update()
+    return (
+        cell_objects,
+        cell_drawings,
+    )
+
+
+def move_cells(
+    window: tkinter.Tk,
+    canvas: tkinter.Canvas,
+    cell_objects: Dict[str, cell.Cell],
+    cell_drawings: Dict,
+):
+    """
+    moves all of the cells and shifts the cells by their movement
+
+    @param window = tkinter window to update
+    @param canvas = tkinter canvas where the objects are drawn
+    @param cell_objects = map of cell memory id to their objects
+    @param cell_drawings = map of cell memory id to their canvas drawings
+    """
+    # move each cell
+    for cell_id, cell_object in cell_objects.items():
+        # calculate the movement
+        cell_object.move()
+        # retrieve cell attributes
+        position = cell_object.get_position()
+        radius = cell_object.get_radius()
+        cell_drawing = cell_drawings[cell_id]
+        # update the drawing
+        utils.update_circular_object(
+            canvas=canvas,
+            position=position,
+            radius=radius,
+            drawing=cell_drawing,
+        )
+    # update the window
+    window.update()
+
+
+def simulate_cells(
+    window: tkinter.Tk, canvas: tkinter.Canvas, n_cells: int, ideal_seqs: Dict[str, str]
+):
     """
     creates cells and simulates their evolution and growth
 
@@ -53,26 +128,17 @@ def simulate_cells(window, canvas, n_cells: int, ideal_seqs: Dict[str, str]):
     @param ideal_seqs = the idealized sequence to compare the cells with
     """
     # create the cells
-    cells_objects = {}
-    cells_drawings = {}
-    for _ in range(n_cells):
-        # save the cells using their memory id
-        value = cell.Cell(traits=constants.CELL_TRAITS, ideal_seqs=ideal_seqs)
-        key = id(value)
-        cells_objects[key] = value
-        # retrieve cell attributes
-        position = value.get_position()
-        radius = value.get_radius()
-        # draw the cells
-        drawing = utils.draw_circular_object(
+    cell_objects, cell_drawings = create_cells(
+        window=window, canvas=canvas, n_cells=n_cells, ideal_seqs=ideal_seqs
+    )
+    # simulate their movement
+    while True:
+        # move the cells and update the objects
+        move_cells(
+            window=window,
             canvas=canvas,
-            position=position,
-            radius=radius,
-            outline_color=constants.CELL_OUTLINE_COLOR,
+            cell_objects=cell_objects,
+            cell_drawings=cell_drawings,
         )
-        # save the cell drawing via its memory id
-        cells_drawings[key] = drawing
-    # update the canvas with the cells
-    window.update()
-    # keep the window alive by looping it
-    window.mainloop()
+        # pause between rounds
+        time.sleep(1)

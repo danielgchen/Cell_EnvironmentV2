@@ -2,6 +2,7 @@ from turtle import pos
 import numpy as np
 import source.constants as constants
 from typing import Optional, List, Tuple
+import tkinter
 
 # generate a random genome
 def gen_genome(
@@ -238,9 +239,9 @@ def calc_corner_coords(position: List[float], radius: float) -> Tuple[float]:
     return (tl_x, tl_y, br_x, br_y)
 
 
-# draw the cell given it's position and radius
+# draw the oval given it's position and radius
 def draw_circular_object(
-    canvas,
+    canvas: tkinter.Canvas,
     position: List[float],
     radius: float,
     fill_color: str = None,
@@ -252,6 +253,8 @@ def draw_circular_object(
     @param canvas = tkinter canvas to draw on
     @param position = center of the object
     @param radius = radius of the object
+    @param fill_color = color of the inside of the circular object
+    @param outline_color = color outlining the circular object
     @returns drawing = canvas drawing of the object
     """
     # configure parameters
@@ -266,3 +269,25 @@ def draw_circular_object(
         tl_x, tl_y, br_x, br_y, fill=fill_color, outline=outline_color
     )
     return drawing
+
+
+# update the oval given it's position and radius
+def update_circular_object(
+    canvas: tkinter.Canvas,
+    position: List[float],
+    radius: float,
+    drawing,
+):
+    """
+    updates a circular object on the given canvas of dimensions provided
+
+    @param canvas = tkinter canvas to draw on
+    @param position = center of the object
+    @param radius = radius of the object
+    @param drawing = the original drawing
+    @returns drawing = new canvas drawing of the object
+    """
+    # calculate the corner coordinates
+    tl_x, tl_y, br_x, br_y = calc_corner_coords(position=position, radius=radius)
+    # draw the cell on the canvas
+    canvas.coords(drawing, tl_x, tl_y, br_x, br_y)
