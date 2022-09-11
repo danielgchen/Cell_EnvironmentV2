@@ -1,4 +1,6 @@
 import source.utils as utils
+import numpy as np
+import source.constants as constants
 from typing import Dict, List, Optional, Tuple
 from Levenshtein import distance as levenshtein_distance
 
@@ -29,6 +31,27 @@ class Cell:
         for trait in self.traits:
             if trait in ideal_seqs:
                 self.calc_trait_score(trait=trait, ideal_seq=ideal_seqs[trait])
+        # position
+        self.position = np.array([0, 0])  # TODO: de-hardcode the position
+        # movement
+        self.move_step_size = constants.MOVE_STEP_SIZE  # TODO: change this to mutatable
+        # energy
+        self.energy = constants.INITIAL_ENERGY
+
+    # movement functions
+    def move(self):
+        """
+        movement magnitude is determined by self.move_step_size energy cost
+        is determined by step size multiplied by trait score for movement 
+        as we consider step size to require a linear higher cost
+        """
+        # calculate deltas
+        deltas = np.array([0, 0])  # TODO: add a function for this
+        # calculate new positions
+        position_hat = self.position + self.deltas
+        # TODO: add canvas based adjustments
+        # reassign position to new positions
+        self.position = position_hat
 
     # calculation functions
     def calc_trait_score(self, trait: str, ideal_seq: str):
@@ -113,12 +136,18 @@ class Cell:
 
     def get_trait_frame(self, trait: str) -> float:
         """
-        get function for a the frame of a given trait
+        get function for the frame of a given trait
         """
         return self.trait2frame[trait]
 
     def get_trait_score(self, trait: str) -> float:
         """
-        get function for a the score of a given trait
+        get function for the score of a given trait
         """
         return self.trait2score[trait]
+
+    def get_move_step_size(self) -> float:
+        """
+        get function for the step size of a movement
+        """
+        return self.move_step_size

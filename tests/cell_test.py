@@ -38,6 +38,8 @@ class CellTests(unittest.TestCase):
         self.calc_trait_score_trait = "mutate"
         self.calc_trait_score_ideal_seq = "AAAAAAAA"
         self.calc_trait_score_trait_score = 0.125
+        # define the expected move step size
+        self.move_step_size = 5
 
     # test calculation functions
     def test_calc_trait_score(self) -> None:
@@ -84,3 +86,7 @@ class CellTests(unittest.TestCase):
         for trait in traits:
             trait_score = self.cell.get_trait_score(trait=trait)
             self.assertEqual(trait_score, self.trait2score[trait])
+
+    def test_get_move_step_size(self) -> None:
+        move_step_size = self.cell.test_get_move_step_size()
+        self.assertEqual(move_step_size, self.move_step_size)
