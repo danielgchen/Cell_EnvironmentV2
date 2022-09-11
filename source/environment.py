@@ -2,6 +2,7 @@ import source.utils as utils
 import source.constants as constants
 import source.cell as cell
 from typing import Dict
+
 # import packages
 import tkinter
 
@@ -19,7 +20,7 @@ def create_canvas():
         window,
         width=constants.WINDOW_WIDTH,
         height=constants.WINDOW_HEIGHT,
-        background=constants.BKGD_COLOR
+        background=constants.BKGD_COLOR,
     )
     # start from middle centered to the upper left (in param sticky)
     canvas.grid(column=0, row=0, sticky=tkinter.NW)
@@ -36,16 +37,13 @@ def create_ideal_seqs():
     ideal_seqs = {
         "digest": utils.gen_genome(size=constants.DIGEST_SIZE),
         "move": utils.gen_genome(size=constants.MOVE_SIZE),
-        "mutate": utils.gen_genome(size=constants.MUTATE_SIZE)
+        "mutate": utils.gen_genome(size=constants.MUTATE_SIZE),
     }
     return ideal_seqs
 
 
 # create cells
-def simulate_cells(
-    n_cells: int,
-    ideal_seqs: Dict[str, str]
-):
+def simulate_cells(n_cells: int, ideal_seqs: Dict[str, str]):
     """
     creates cells and simulates their evolution and growth
 

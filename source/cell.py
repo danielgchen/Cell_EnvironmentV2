@@ -42,7 +42,7 @@ class Cell:
     def move(self):
         """
         movement magnitude is determined by self.move_step_size energy cost
-        is determined by step size multiplied by trait score for movement 
+        is determined by step size multiplied by trait score for movement
         as we consider step size to require a linear higher cost
         """
         # calculate deltas
@@ -58,7 +58,6 @@ class Cell:
         energy_cost = distance * (1 - cost_scaler)
         # update the energy
         self.energy -= energy_cost
-
 
     # calculation functions
     def calc_trait_score(self, trait: str, ideal_seq: str):

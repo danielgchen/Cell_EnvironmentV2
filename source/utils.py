@@ -155,12 +155,13 @@ def gen_mut_frame(
     else:
         return value
 
+
 # generate step for cells to take
 # TODO: scale to multiple dimensions but for now assume two dimensions
 def gen_rand_steps(rng: Optional[np.random._generator.Generator] = None) -> List[int]:
     """
     generates steps in a random direction in an object's given dimension
-    
+
     @param rng = random number generator
     @returns rand_steps = numpy array of the random non-scaled steps
     """
@@ -175,7 +176,7 @@ def gen_rand_steps(rng: Optional[np.random._generator.Generator] = None) -> List
 def scale_rand_steps(magnitude: float, rand_steps: List[int]) -> List[float]:
     """
     scales the random steps by the given magnitude
-    
+
     @param magnitude = the total distance the steps should equate to
     @returns scaled_rand_steps = random steps scaled to a given magnitude
     """
@@ -202,7 +203,9 @@ def scale_rand_steps(magnitude: float, rand_steps: List[int]) -> List[float]:
 
 
 # generate deltas using the above two functions
-def gen_deltas(magnitude: float, rng: Optional[np.random._generator.Generator] = None) -> List[float]:
+def gen_deltas(
+    magnitude: float, rng: Optional[np.random._generator.Generator] = None
+) -> List[float]:
     """
     generates random steps then scales it to the given magnitude
 

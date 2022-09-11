@@ -9,6 +9,7 @@ mitotically and accumulate mutations throughout their lifespan until death,
 where death is defined by the loss of all energy and biologic sustainability
 """
 
+
 def run_simulation(
     n_cells: int = 5,
 ):
