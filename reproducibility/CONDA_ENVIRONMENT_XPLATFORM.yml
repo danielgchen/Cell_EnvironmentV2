@@ -1,0 +1,8 @@
+name: cellv2_env
+channels:
+  - defaults
+dependencies:
+  - python=3.10
+  - ipython
+  - numpy
+prefix: /Users/danielgchen/anaconda3/envs/cellv2_env
