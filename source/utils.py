@@ -1,5 +1,5 @@
 import numpy as np
-import constants
+import source.constants as constants
 from typing import Optional, List
 
 # generate a random genome

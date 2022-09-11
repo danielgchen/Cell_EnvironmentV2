@@ -1,12 +1,15 @@
 import unittest
-import utils
+import source.utils as utils
 import numpy as np
 
 
 class UtilsTests(unittest.TestCase):
     def setUp(self) -> None:
         # inputs for test_gen_genome
-        self.genome = "TGGCCAAAATGTGGTGGGGTCTGACTGATGTAATAGACCCCAAAAGGGCG"
+        self.genome = (
+            "TGGCCAAAATGTGGTGGGGTCTGACTGATGTAATAGACCCCAAAAGGGCGTCCTTT"
+            "CGTGTGGCTAGGTGCCCCGTATGCGGCCGGGCTCCTCAGGAACTCTCATTAAGCGATCT"
+        )
         # inputs for test_gen_frame
         self.frame = (7, 9)
         # inputs for test_gen_mut_type
@@ -18,7 +21,7 @@ class UtilsTests(unittest.TestCase):
         # inputs for test_gen_mut
         self.mut = "C"
         # inputs for test_gen_mut_frame
-        self.mut_frame = 2
+        self.mut_frame = 0
 
     def test_gen_genome(self) -> None:
         rng = np.random.default_rng(0)

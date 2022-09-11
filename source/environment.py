@@ -1,6 +1,6 @@
-import utils
-import constants
-import cell
+import source.utils as utils
+import source.constants as constants
+import source.cell as cell
 from typing import Dict
 # import packages
 from tkinter import *
