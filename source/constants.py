@@ -22,3 +22,5 @@ MUTATE_SIZE = 15
 
 # window parameters
 WINDOW_NAME = "Cell Modeling Environment"
+WINDOW_WIDTH = WINDOW_HEIGHT = 500
+BKGD_COLOR = "#ffffff"

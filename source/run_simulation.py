@@ -1,5 +1,4 @@
 import source.environment as environment
-import argparse
 
 """
 this program represents genetic development of a randomized subset of cells
@@ -11,38 +10,31 @@ this is continue for `perc_res` number of steps and typically with enough
 steps and enough children reaches a perfect match against the idealized genomes
 """
 
-# define argument parser
-parser = argparse.ArgumentParser()
-parser.add_argument(
-    "--n-cells", type=int, default=5, help="number of cells to start with"
-)
-parser.add_argument(
-    "--perc-res", type=int, default=200, help="the number of steps to take"
-)
-parser.add_argument(
-    "--n-children",
-    type=int,
-    default=2000,
-    help="the number of children each cell produces",
-)
-parser.add_argument(
-    "--n-filter",
-    type=int,
-    default=200,
-    help="sthe number of children to filter down to",
-)
+def run_simulation(
+    n_cells: int = 5,
+    perc_res: int =200,
+    n_children: int = 2000,
+    n_filter: int = 200,
+):
+    """
+    implementation of the program described above
 
-# parse the arguments
-args = parser.parse_args()
+    @param n_cells = number of cells to start with
+    @param perc_res = the number of steps to take
+    @param n_children = the number of children each cell produces
+    @param n_filter = the number of children to filter down to
+    """
+    # create the idealized sequences
+    ideal_seqs = environment.create_ideal_seqs()
 
-# create the idealized sequences
-ideal_seqs = environment.create_ideal_seqs()
+    # create the window and canvas
+    window, canvas = environment.create_canvas()
 
-# run the simulation
-environment.simulate_cells(
-    n_cells=args.n_cells,
-    perc_res=args.perc_res,
-    n_children=args.n_children,
-    n_filter=args.n_filter,
-    ideal_seqs=ideal_seqs,
-)
+    # run the simulation
+    environment.simulate_cells(
+        n_cells=n_cells,
+        perc_res=perc_res,
+        n_children=n_children,
+        n_filter=n_filter,
+        ideal_seqs=ideal_seqs,
+    )

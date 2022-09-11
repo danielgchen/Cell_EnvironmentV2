@@ -3,28 +3,26 @@ import source.constants as constants
 import source.cell as cell
 from typing import Dict
 # import packages
-from tkinter import *
-from tkinter import ttk
-import time
+import tkinter
 
 # create tkinter based canvas
 def create_canvas():
     # instantiate application window
-    window = Tk()
+    window = tkinter.Tk()
     # name application window
     window.title(constants.WINDOW_NAME)
     # let it fill empty space (we have 1 row, 1 col)
     window.columnconfigure(0, weight=1)
     window.rowconfigure(0, weight=1)
     # create the canvas
-    canvas = Canvas(
+    canvas = tkinter.Canvas(
         window,
         width=constants.WINDOW_WIDTH,
         height=constants.WINDOW_HEIGHT,
         background=constants.BKGD_COLOR
     )
     # start from middle centered to the upper left (in param sticky)
-    canvas.grid(column=0, row=0, sticky=NW)
+    canvas.grid(column=0, row=0, sticky=tkinter.NW)
     return window, canvas
 
 
