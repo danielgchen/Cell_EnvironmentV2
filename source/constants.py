@@ -13,6 +13,8 @@ DEFAULT_GENOME_SIZE = 115
 DEFAULT_RNG = np.random.default_rng(0)
 # chance for a mutation to be an indel
 INDEL_THRESHOLD = 0.1
+# movement resolutions
+STEP_RESOLUTION = 4
 
 # cell traits
 CELL_TRAITS = ["digest", "move", "mutate"]

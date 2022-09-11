@@ -154,3 +154,64 @@ def gen_mut_frame(
         return value + round(delta)
     else:
         return value
+
+# generate step for cells to take
+# TODO: scale to multiple dimensions but for now assume two dimensions
+def gen_rand_steps(rng: Optional[np.random._generator.Generator] = None) -> List[int]:
+    """
+    generates steps in a random direction in an object's given dimension
+    
+    @param rng = random number generator
+    @returns rand_steps = numpy array of the random non-scaled steps
+    """
+    # configure parameters
+    rng = constants.DEFAULT_RNG if rng is None else rng
+    # generate the random integer steps
+    rand_steps = rng.integers(-constants.STEP_RESOLUTION, constants.STEP_RESOLUTION, 2)
+    return rand_steps
+
+
+# scale the steps to a given magnitude
+def scale_rand_steps(magnitude: float, rand_steps: List[int]) -> List[float]:
+    """
+    scales the random steps by the given magnitude
+    
+    @param magnitude = the total distance the steps should equate to
+    @returns scaled_rand_steps = random steps scaled to a given magnitude
+    """
+    # only proceed if magnitude > 0
+    if magnitude == 0:
+        return np.zeros(shape=rand_steps.shape)
+    # only proceed if there is movement
+    if rand_steps.sum() == 0:
+        return rand_steps
+    # convert the random steps to float type
+    rand_steps = rand_steps.astype(float)
+    # calculate the scaling factor to scale the random steps by
+    # the calculation is based on reversing L2 norm (i.e. euclidean distance)
+    # A^2 + B^2 = C^2 and we have (A'/F)^2 + (B'/F)^2 = C^2
+    # we're trying to solve for F, we abstract to SUM((STEP/F)^2 for each STEP) = C^2
+    # thus we solve for F via the idea that (X/Y)^2 = X^2 * (1/Y)^2
+    # so C^2 = 1/F^2 * SUM(STEP^2 for each STEP)
+    # thus F^2 = SUM(STEP^2 for each STEP) / C^2
+    # giving us F = SQRT( SUM( STEP^2 for each STEP ) / C^2 )
+    scaling_factor = np.sqrt(np.power(rand_steps, 2).sum() / np.power(magnitude, 2))
+    # scale by the scaling factor
+    scaled_rand_steps = rand_steps / scaling_factor
+    return scaled_rand_steps
+
+
+# generate deltas using the above two functions
+def gen_deltas(magnitude: float, rng: Optional[np.random._generator.Generator] = None) -> List[float]:
+    """
+    generates random steps then scales it to the given magnitude
+
+    @param magnitude = the total distance the steps should equate to
+    @param rng = random number generator
+    @returns scaled_rand_steps = random steps scaled to a given magnitude
+    """
+    # calculate random steps
+    rand_steps = gen_rand_steps(rng=rng)
+    # scale random steps
+    scaled_rand_steps = scale_rand_steps(magnitude=magnitude, rand_steps=rand_steps)
+    return scaled_rand_steps

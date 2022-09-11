@@ -46,12 +46,19 @@ class Cell:
         as we consider step size to require a linear higher cost
         """
         # calculate deltas
-        deltas = np.array([0, 0])  # TODO: add a function for this
+        deltas = utils.gen_deltas(magnitude=self.move_step_size)
         # calculate new positions
         position_hat = self.position + self.deltas
         # TODO: add canvas based adjustments
         # reassign position to new positions
         self.position = position_hat
+        # calculate the energy
+        distance = np.linalg.norm(deltas)
+        cost_scaler = self.get_trait_score("move")
+        energy_cost = distance * (1 - cost_scaler)
+        # update the energy
+        self.energy -= energy_cost
+
 
     # calculation functions
     def calc_trait_score(self, trait: str, ideal_seq: str):
