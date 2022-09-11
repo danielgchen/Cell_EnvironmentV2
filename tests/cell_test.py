@@ -88,5 +88,5 @@ class CellTests(unittest.TestCase):
             self.assertEqual(trait_score, self.trait2score[trait])
 
     def test_get_move_step_size(self) -> None:
-        move_step_size = self.cell.test_get_move_step_size()
+        move_step_size = self.cell.get_move_step_size()
         self.assertEqual(move_step_size, self.move_step_size)
