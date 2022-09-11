@@ -35,6 +35,7 @@ class Cell:
         self.position = constants.INITIAL_POSITION
         # movement
         self.move_step_size = constants.MOVE_STEP_SIZE  # TODO: change this to mutatable
+        self.scaling_factor = utils.calc_scaling_factor(magnitude=self.move_step_size)
         # energy
         self.energy = constants.INITIAL_ENERGY
         # radius
@@ -48,7 +49,7 @@ class Cell:
         as we consider step size to require a linear higher cost
         """
         # calculate deltas
-        deltas = utils.gen_deltas(magnitude=self.move_step_size)
+        deltas = utils.gen_deltas(scaling_factor=self.scaling_factor)
         # calculate new positions
         position_hat = self.position + deltas
         # TODO: add canvas based adjustments
