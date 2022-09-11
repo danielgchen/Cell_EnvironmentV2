@@ -43,14 +43,36 @@ def create_ideal_seqs():
 
 
 # create cells
-def simulate_cells(n_cells: int, ideal_seqs: Dict[str, str]):
+def simulate_cells(window, canvas, n_cells: int, ideal_seqs: Dict[str, str]):
     """
     creates cells and simulates their evolution and growth
 
+    @param window = tkinter window to create a canvas in and update
+    @param canvas = tkinter canvas to draw and manipulate objects in
     @param n_cells = number of cells to start with
     @param ideal_seqs = the idealized sequence to compare the cells with
     """
     # create the cells
-    cells = []
+    cells_objects = {}
+    cells_drawings = {}
     for _ in range(n_cells):
-        cells.append(cell.Cell(traits=constants.CELL_TRAITS, ideal_seqs=ideal_seqs))
+        # save the cells using their memory id
+        value = cell.Cell(traits=constants.CELL_TRAITS, ideal_seqs=ideal_seqs)
+        key = id(value)
+        cells_objects[key] = value
+        # retrieve cell attributes
+        position = value.get_position()
+        radius = value.get_radius()
+        # draw the cells
+        drawing = utils.draw_circular_object(
+            canvas=canvas,
+            position=position,
+            radius=radius,
+            outline_color=constants.CELL_OUTLINE_COLOR,
+        )
+        # save the cell drawing via its memory id
+        cells_drawings[key] = drawing
+    # update the canvas with the cells
+    window.update()
+    # keep the window alive by looping it
+    window.mainloop()

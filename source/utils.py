@@ -1,6 +1,7 @@
+from turtle import pos
 import numpy as np
 import source.constants as constants
-from typing import Optional, List
+from typing import Optional, List, Tuple
 
 # generate a random genome
 def gen_genome(
@@ -218,3 +219,50 @@ def gen_deltas(
     # scale random steps
     scaled_rand_steps = scale_rand_steps(magnitude=magnitude, rand_steps=rand_steps)
     return scaled_rand_steps
+
+
+# calculate corners from center and radius
+def calc_corner_coords(position: List[float], radius: float) -> Tuple[float]:
+    """
+    derives corners from an object's position and radius
+
+    @param position = center of the object
+    @param radius = radius of the object
+    @returns corners = as [top left x, top left y, bottom right x, bottom right y]
+    """
+    # unpack the position
+    x, y = position
+    # derive the corner coordinates
+    tl_x, tl_y = x - radius, y - radius
+    br_x, br_y = x + radius, y + radius
+    return (tl_x, tl_y, br_x, br_y)
+
+
+# draw the cell given it's position and radius
+def draw_circular_object(
+    canvas,
+    position: List[float],
+    radius: float,
+    fill_color: str = None,
+    outline_color: str = None,
+):
+    """
+    draws a circular object on the given canvas of dimensions provided
+
+    @param canvas = tkinter canvas to draw on
+    @param position = center of the object
+    @param radius = radius of the object
+    @returns drawing = canvas drawing of the object
+    """
+    # configure parameters
+    fill_color = constants.DEFAULT_FILL_COLOR if fill_color is None else fill_color
+    outline_color = (
+        constants.DEFAULT_OUTLINE_COLOR if outline_color is None else outline_color
+    )
+    # calculate the corner coordinates
+    tl_x, tl_y, br_x, br_y = calc_corner_coords(position=position, radius=radius)
+    # draw the cell on the canvas
+    drawing = canvas.create_oval(
+        tl_x, tl_y, br_x, br_y, fill=fill_color, outline=outline_color
+    )
+    return drawing

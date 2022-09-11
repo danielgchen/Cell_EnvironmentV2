@@ -32,11 +32,13 @@ class Cell:
             if trait in ideal_seqs:
                 self.calc_trait_score(trait=trait, ideal_seq=ideal_seqs[trait])
         # position
-        self.position = np.array([0, 0])  # TODO: de-hardcode the position
+        self.position = constants.INITIAL_POSITION
         # movement
         self.move_step_size = constants.MOVE_STEP_SIZE  # TODO: change this to mutatable
         # energy
         self.energy = constants.INITIAL_ENERGY
+        # radius
+        self.radius = constants.CELL_RADIUS
 
     # movement functions
     def move(self):
@@ -157,3 +159,15 @@ class Cell:
         get function for the step size of a movement
         """
         return self.move_step_size
+
+    def get_position(self) -> List[float]:
+        """
+        get function for the position
+        """
+        return self.position
+
+    def get_radius(self) -> float:
+        """
+        get function for the radius
+        """
+        return self.radius

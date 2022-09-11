@@ -26,6 +26,8 @@ def run_simulation(
 
     # run the simulation
     environment.simulate_cells(
+        window=window,
+        canvas=canvas,
         n_cells=n_cells,
         ideal_seqs=ideal_seqs,
     )
