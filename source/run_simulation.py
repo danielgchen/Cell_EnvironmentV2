@@ -1,3 +1,4 @@
+import tkinter
 import source.environment as environment
 
 """
@@ -23,6 +24,16 @@ def run_simulation(
 
     # create the window and canvas
     window, canvas = environment.create_canvas()
+
+    # add exit button to stop the loop
+    exit_button = tkinter.Button(
+        window,
+        text="Exit!",
+        width=2,
+        height=1,
+        command=window.destroy,
+    )
+    exit_button.place(x=0, y=0)
 
     # run the simulation
     environment.simulate_cells(
