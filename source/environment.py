@@ -13,7 +13,7 @@ def create_canvas():
     window.title(constants.WINDOW_NAME)
     # let it fill empty space (we have 1 row, 1 col)
     window.columnconfigure(0, weight=1)
-    window.rowconfigure(0, weight=1)
+    window.rowconfigure(2, weight=1)
     # create the canvas
     canvas = tkinter.Canvas(
         window,
@@ -21,8 +21,8 @@ def create_canvas():
         height=constants.WINDOW_HEIGHT,
         background=constants.BKGD_COLOR,
     )
-    # start from middle centered to the upper left (in param sticky)
-    canvas.grid(column=0, row=0, sticky=tkinter.NW)
+    # start from upper left (in param sticky)
+    canvas.grid(row=2, column=0, sticky=tkinter.NW)
     return window, canvas
 
 
@@ -153,6 +153,39 @@ def reap_cells(
     window.update()
 
 
+def create_labels(window: tkinter.Tk):
+    """
+    creates statistic labels to display under the exit button
+
+    @param window = tkinter window to create a canvas in and update
+    @returns labels = map of labels with key being the title of each one
+    """
+    # create tracker
+    labels = {}
+    # add the round label
+    labels["rounds"] = tkinter.Label(window, text="0 rounds")
+    labels["rounds"].grid(row=0, column=0, sticky=tkinter.NW)
+    # add the n-cells label
+    labels["cells"] = tkinter.Label(window, text="0 cells")
+    labels["cells"].grid(row=1, column=0, sticky=tkinter.NW)
+    return labels
+
+
+def update_labels(labels: Dict[str, tkinter.Label], n_cells: int):
+    """
+    updates the labels with new round numbers and new n-cells
+
+    @param labels = map of labels with key being the title of each one
+    @param n_cells = new number of cells present in the environment
+    """
+    # get the current round number
+    round_num = int(labels["rounds"]["text"].split(" ")[0])
+    # update the round number
+    labels["rounds"]["text"] = f"{round_num + 1} rounds"
+    # update the number of cells
+    labels["cells"]["text"] = f"{n_cells} cells"
+
+
 def simulate_cells(
     window: tkinter.Tk, canvas: tkinter.Canvas, n_cells: int, ideal_seqs: Dict[str, str]
 ):
@@ -168,6 +201,10 @@ def simulate_cells(
     cell_objects, cell_drawings = create_cells(
         window=window, canvas=canvas, n_cells=n_cells, ideal_seqs=ideal_seqs
     )
+    # create the labels
+    labels = create_labels(window=window)
+    # update the labels
+    update_labels(labels=labels, n_cells=len(cell_objects))
     # simulate their movement
     while True:
         # move the cells and update the objects
@@ -184,5 +221,7 @@ def simulate_cells(
             cell_objects=cell_objects,
             cell_drawings=cell_drawings,
         )
+        # update the labels
+        update_labels(labels=labels, n_cells=len(cell_objects))
         # pause between rounds
         time.sleep(1)

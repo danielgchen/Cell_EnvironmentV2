@@ -33,7 +33,7 @@ def run_simulation(
         height=1,
         command=window.destroy,
     )
-    exit_button.place(x=0, y=0)
+    exit_button.grid(row=2, column=1, sticky=tkinter.SE)
 
     # run the simulation
     environment.simulate_cells(
