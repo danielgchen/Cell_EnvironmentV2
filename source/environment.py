@@ -66,11 +66,13 @@ def create_cells(
         # retrieve cell attributes
         position = cell_object.get_position()
         radius = cell_object.get_radius()
+        color = cell_object.get_color()
         # draw the cells
         cell_drawing = utils.draw_circular_object(
             canvas=canvas,
             position=position,
             radius=radius,
+            fill_color=color,
             outline_color=constants.CELL_OUTLINE_COLOR,
         )
         # save the cell drawing via its memory id
