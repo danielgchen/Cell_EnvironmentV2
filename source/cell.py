@@ -40,6 +40,8 @@ class Cell:
         self.energy = constants.INITIAL_ENERGY
         # radius
         self.radius = constants.CELL_RADIUS
+        # color
+        self.color = utils.gen_color()
 
     # movement functions
     def move(self):
@@ -172,3 +174,9 @@ class Cell:
         get function for the radius
         """
         return self.radius
+
+    def get_color(self) -> str:
+        """
+        get function for the color
+        """
+        return self.color

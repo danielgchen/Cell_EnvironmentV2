@@ -10,18 +10,20 @@ class UtilsTests(unittest.TestCase):
             "TGGCCAAAATGTGGTGGGGTCTGACTGATGTAATAGACCCCAAAAGGGCGTCCTTT"
             "CGTGTGGCTAGGTGCCCCGTATGCGGCCGGGCTCCTCAGGAACTCTCATTAAGCGATCT"
         )
-        # inputs for test_gen_frame
+        # outputs for test_gen_frame
         self.frame = (7, 9)
-        # inputs for test_gen_mut_type
+        # outputs for test_gen_mut_type
         self.mut_type = "sub"
-        # inputs for test_gen_mut_sub
+        # outputs for test_gen_mut_sub
         self.mut_sub = "T"
-        # inputs for test_gen_mut_ins
+        # outputs for test_gen_mut_ins
         self.mut_ins = "T"
-        # inputs for test_gen_mut
+        # outputs for test_gen_mut
         self.mut = "C"
-        # inputs for test_gen_mut_frame
+        # outputs for test_gen_mut_frame
         self.mut_frame = 0
+        # outputs for test_gen_color
+        self.color = "#D9A382"
 
     def test_gen_genome(self) -> None:
         rng = np.random.default_rng(0)
@@ -57,3 +59,8 @@ class UtilsTests(unittest.TestCase):
         rng = np.random.default_rng(0)
         mut_frame = utils.gen_mut_frame(3, 0.9, rng=rng)
         self.assertEqual(mut_frame, self.mut_frame)
+
+    def test_gen_color(self) -> None:
+        rng = np.random.default_rng(0)
+        color = utils.gen_color(rng=rng)
+        self.assertEqual(color, self.color)

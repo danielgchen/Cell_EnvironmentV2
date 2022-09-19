@@ -279,3 +279,20 @@ def update_circular_object(
     tl_x, tl_y, br_x, br_y = calc_corner_coords(position=position, radius=radius)
     # draw the cell on the canvas
     canvas.coords(drawing, tl_x, tl_y, br_x, br_y)
+
+
+# generate a random color
+def gen_color(rng: Optional[np.random._generator.Generator] = None) -> str:
+    """
+    generates a random color
+
+    @param rng = random number generator to create the genome
+    @returns hex_color = string of the hex color
+    """
+    # configure parameters
+    rng = constants.DEFAULT_RNG if rng is None else rng
+    # define method to generate random rgb value
+    rand_rgb = lambda: rng.integers(0, 256)
+    # create hex color %02X means convert to hexadecimal format
+    hex_color = "#%02X%02X%02X" % (rand_rgb(), rand_rgb(), rand_rgb())
+    return hex_color

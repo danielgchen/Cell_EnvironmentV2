@@ -40,6 +40,8 @@ class CellTests(unittest.TestCase):
         self.calc_trait_score_trait_score = 0.125
         # define the expected move step size
         self.move_step_size = 5
+        # define the color
+        self.color = "#D9A382"
 
     # test calculation functions
     def test_calc_trait_score(self) -> None:
@@ -90,3 +92,7 @@ class CellTests(unittest.TestCase):
     def test_get_move_step_size(self) -> None:
         move_step_size = self.cell.get_move_step_size()
         self.assertEqual(move_step_size, self.move_step_size)
+
+    def test_get_color(self) -> None:
+        color = self.cell.get_color()
+        self.assertEqual(color, self.color)
