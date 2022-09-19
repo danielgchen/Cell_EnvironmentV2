@@ -124,19 +124,31 @@ def reap_cells(
     cell_objects: Dict[str, cell.Cell],
     cell_drawings: Dict,
 ):
+    """
+    checks the health of all the cells and kills them if their energy is negative
+
+    @param window = tkinter window to update
+    @param canvas = tkinter canvas where the objects are drawn
+    @param cell_objects = map of cell memory id to their objects
+    @param cell_drawings = map of cell memory id to their canvas drawings
+    """
+    # instantiate new tracking objects
+    new_cell_objects = {}
+    new_cell_drawings = {}
     # check the health of each cell
     for cell_id, cell_object in cell_objects.items():
         # see if the cell is alive
         is_alive = cell_object.is_alive()
-        # skip if the cell is alive
+        # if the cell is alive add to new trackers
         if is_alive:
-            continue
+            new_cell_objects[cell_id] = cell_objects[cell_id]
+            new_cell_drawings[cell_id] = cell_drawings[cell_id]
         # remove it from the canvas if the cell is dead
-        canvas.delete(cell_drawings[cell_id])
-        # remove it from the cell drawing trackers
-        del cell_drawings[cell_id]
-        # remove it from the list of cells
-        del cell_objects[cell_id]
+        else:
+            canvas.delete(cell_drawings[cell_id])
+    # reassign old trackers with new values
+    cell_objects = new_cell_objects
+    cell_drawings = new_cell_drawings
     # update the window
     window.update()
 
@@ -160,6 +172,13 @@ def simulate_cells(
     while True:
         # move the cells and update the objects
         move_cells(
+            window=window,
+            canvas=canvas,
+            cell_objects=cell_objects,
+            cell_drawings=cell_drawings,
+        )
+        # kill the cells if needed
+        reap_cells(
             window=window,
             canvas=canvas,
             cell_objects=cell_objects,

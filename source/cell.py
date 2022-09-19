@@ -126,6 +126,14 @@ class Cell:
         kwargs = {"genome": mut_genome, "trait2frame": mut_trait2frame}
         return kwargs
 
+    # boolean functions
+    def is_alive(self) -> bool:
+        """
+        checks if the cell is alive based on health metrics
+        alive if energy is >= 0 i.e. quiescent / active
+        """
+        return self.energy >= 0
+
     # get functions
     def get_genome(self) -> str:
         """
