@@ -118,6 +118,29 @@ def move_cells(
     window.update()
 
 
+def reap_cells(
+    window: tkinter.Tk,
+    canvas: tkinter.Canvas,
+    cell_objects: Dict[str, cell.Cell],
+    cell_drawings: Dict,
+):
+    # check the health of each cell
+    for cell_id, cell_object in cell_objects.items():
+        # see if the cell is alive
+        is_alive = cell_object.is_alive()
+        # skip if the cell is alive
+        if is_alive:
+            continue
+        # remove it from the canvas if the cell is dead
+        canvas.delete(cell_drawings[cell_id])
+        # remove it from the cell drawing trackers
+        del cell_drawings[cell_id]
+        # remove it from the list of cells
+        del cell_objects[cell_id]
+    # update the window
+    window.update()
+
+
 def simulate_cells(
     window: tkinter.Tk, canvas: tkinter.Canvas, n_cells: int, ideal_seqs: Dict[str, str]
 ):
