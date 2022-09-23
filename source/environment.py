@@ -1,5 +1,6 @@
 import source.utils as utils
 import source.constants as constants
+import source.snapshot as snapshot
 import source.cell as cell
 from typing import Dict, Tuple
 import time
@@ -205,6 +206,8 @@ def simulate_cells(
     labels = create_labels(window=window)
     # update the labels
     update_labels(labels=labels, n_cells=len(cell_objects))
+    # take the initial snapshot
+    snapshot.take_snapshot(cell_objects=cell_objects, labels=labels)
     # simulate their movement
     while True:
         # move the cells and update the objects
@@ -223,5 +226,7 @@ def simulate_cells(
         )
         # update the labels
         update_labels(labels=labels, n_cells=len(cell_objects))
+        # take the general snapshot
+        snapshot.take_snapshot(cell_objects=cell_objects, labels=labels)
         # pause between rounds
-        time.sleep(1)
+        time.sleep(constants.ROUND_SLEEP)

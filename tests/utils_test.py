@@ -24,6 +24,10 @@ class UtilsTests(unittest.TestCase):
         self.mut_frame = 0
         # outputs for test_gen_color
         self.color = "#D9A382"
+        # inputs for create_dir_if_none
+        self.dirname = "../tests"
+        # outputs for create_dir_if_none
+        self.func_out = 2
 
     def test_gen_genome(self) -> None:
         rng = np.random.default_rng(0)
@@ -64,3 +68,7 @@ class UtilsTests(unittest.TestCase):
         rng = np.random.default_rng(0)
         color = utils.gen_color(rng=rng)
         self.assertEqual(color, self.color)
+
+    def test_create_dir_if_none(self) -> None:
+        func_out = utils.create_dir_if_none(self.dirname)
+        self.assertEqual(func_out, self.func_out)

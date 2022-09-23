@@ -138,53 +138,95 @@ class Cell:
     def get_genome(self) -> str:
         """
         get function for the genome
+
+        @returns genome
         """
         return self.genome
 
     def get_genome_size(self) -> int:
         """
         get function for the genome's size
+
+        @returns genome size
         """
         return self.genome_size
 
     def get_traits(self) -> Optional[List[str]]:
         """
         get function for the cell's traits
+
+        @returns list of traits
         """
         return self.traits
 
-    def get_trait_frame(self, trait: str) -> float:
+    def get_trait_frame(self, trait: str) -> Tuple[int, int]:
         """
         get function for the frame of a given trait
+
+        @returns the frame for the given trait
         """
         return self.trait2frame[trait]
 
     def get_trait_score(self, trait: str) -> float:
         """
         get function for the score of a given trait
+
+        @returns the score for a given trait relative to the ideal
         """
         return self.trait2score[trait]
 
     def get_move_step_size(self) -> float:
         """
         get function for the step size of a movement
+
+        @returns the step size for the cell
         """
         return self.move_step_size
 
     def get_position(self) -> List[float]:
         """
         get function for the position
+
+        @returns the position of the cell
         """
         return self.position
 
     def get_radius(self) -> float:
         """
         get function for the radius
+
+        @returns the radius of the cell
         """
         return self.radius
 
     def get_color(self) -> str:
         """
         get function for the color
+
+        @returns the color of the cell
         """
         return self.color
+
+    # snapshot functions
+    def get_snap(self) -> dict:
+        """
+        creates a JSON formatted snapshot of the cell
+
+        @returns json_out = JSON formatted cell insides
+        """
+        # instantiate the tracking variable
+        json_out = {}
+        # add all variables of interest
+        json_out["genome"] = self.genome
+        json_out["genome_size"] = self.genome_size
+        json_out["color"] = self.color
+        json_out["radius"] = self.radius
+        json_out["position"] = self.position.tolist()
+        json_out["move_step_size"] = self.move_step_size
+        # add all trait related variables
+        json_out["traits"] = self.traits
+        json_out["trait_frames"] = {
+            k: [int(v) for v in vs] for k, vs in self.trait2frame.items()
+        }
+        json_out["trait_scores"] = self.trait2score
+        return json_out

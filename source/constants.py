@@ -15,6 +15,8 @@ DEFAULT_RNG = np.random.default_rng(0)
 INDEL_THRESHOLD = 0.1
 # movement resolutions
 STEP_RESOLUTION = 4
+# sleep time
+ROUND_SLEEP = 0.1
 
 # cell traits
 CELL_TRAITS = ["digest", "move", "mutate"]
@@ -44,3 +46,7 @@ MUTATE_SIZE = 15
 # colors
 DEFAULT_FILL_COLOR = "#ffffff"
 DEFAULT_OUTLINE_COLOR = "#000000"
+
+# snapshot filename
+SNAPSHOT_DIRNAME = "snapshots"
+SNAPSHOT_FILENAME_PREFIX = "snap_"
