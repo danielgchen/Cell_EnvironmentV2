@@ -7,7 +7,7 @@ import tkinter
 
 
 def prep_snapshot_env(
-    dirname: str, prefix: str, labels: Dict[str, tkinter.Label]
+    dirname: str, prefix: str, labels: Dict[str, tkinter.Label], overwrite: bool
 ) -> str:
     """
     constructs a filename from the given round number in labels and in the
@@ -16,6 +16,7 @@ def prep_snapshot_env(
     @param dirname = directory to create the snapshot
     @param prefix = prefix of the snapshot save files
     @param labels = labels of the given environment
+    @param overwrite = whether to overwrite existing data
     @returns filename = filename to write the snapshot to
     """
     # get the file directory
@@ -24,7 +25,7 @@ def prep_snapshot_env(
     # replace current directory with ideal
     dirname = file_dir.replace("source", dirname)
     # create the directory if not yet done
-    _ = utils.create_dir_if_none(dirname=dirname)
+    _ = utils.create_dir_if_none(dirname=dirname, overwrite=overwrite)
     # retrieve the round number
     round_num = labels["rounds"]["text"].split(" ")[0]
     # append the prefix
@@ -34,18 +35,22 @@ def prep_snapshot_env(
     return filename
 
 
-def take_snapshot(cell_objects: Dict, labels: Dict[str, tkinter.Label]):
+def take_snapshot(
+    cell_objects: Dict, labels: Dict[str, tkinter.Label], overwrite: bool
+):
     """
     takes a snapshot of all of the cells and saves it to the snapshot directory
 
     @param cell_objects = cells to save
     @param labels = labels of the given environment
+    @param overwrite = whether to overwrite existing data
     """
     # get the filename
     filename = prep_snapshot_env(
         dirname=constants.SNAPSHOT_DIRNAME,
         prefix=constants.SNAPSHOT_FILENAME_PREFIX,
         labels=labels,
+        overwrite=overwrite,
     )
     # create tracking variable for all cells
     cell_snaps = {}

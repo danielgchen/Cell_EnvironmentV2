@@ -147,11 +147,10 @@ def reap_cells(
         # remove it from the canvas if the cell is dead
         else:
             canvas.delete(cell_drawings[cell_id])
-    # reassign old trackers with new values
-    cell_objects = new_cell_objects
-    cell_drawings = new_cell_drawings
     # update the window
     window.update()
+    # return the new trackers
+    return new_cell_objects, new_cell_drawings
 
 
 def create_labels(window: tkinter.Tk):
@@ -207,7 +206,7 @@ def simulate_cells(
     # update the labels
     update_labels(labels=labels, n_cells=len(cell_objects))
     # take the initial snapshot
-    snapshot.take_snapshot(cell_objects=cell_objects, labels=labels)
+    snapshot.take_snapshot(cell_objects=cell_objects, labels=labels, overwrite=True)
     # simulate their movement
     while True:
         # move the cells and update the objects
@@ -218,7 +217,7 @@ def simulate_cells(
             cell_drawings=cell_drawings,
         )
         # kill the cells if needed
-        reap_cells(
+        cell_objects, cell_drawings = reap_cells(
             window=window,
             canvas=canvas,
             cell_objects=cell_objects,
@@ -226,7 +225,10 @@ def simulate_cells(
         )
         # update the labels
         update_labels(labels=labels, n_cells=len(cell_objects))
-        # take the general snapshot
-        snapshot.take_snapshot(cell_objects=cell_objects, labels=labels)
+        # take the general snapshot if there are cells
+        if len(cell_objects) > 0:
+            snapshot.take_snapshot(
+                cell_objects=cell_objects, labels=labels, overwrite=False
+            )
         # pause between rounds
         time.sleep(constants.ROUND_SLEEP)

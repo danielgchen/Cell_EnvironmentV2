@@ -300,14 +300,19 @@ def gen_color(rng: Optional[np.random._generator.Generator] = None) -> str:
 
 
 # create a directory if it does not exist
-def create_dir_if_none(dirname: str):
+def create_dir_if_none(dirname: str, overwrite: bool):
     """
     creates a directory if none exist, if one exists it returns 2
     if none exists than it creates one and returns 0 if any errors are
     returned then it returns 1 and logs the error
 
     @param dirname = name of the directory to create
+    @param overwrite = whether or not to remove the directory prior
+    @returns status code
     """
+    # remove if needed
+    if overwrite:
+        os.system(f"rm -rf {dirname}")
     # skip if the directory already exists
     if os.path.exists(dirname):
         return 2
@@ -319,4 +324,3 @@ def create_dir_if_none(dirname: str):
     except Exception as e:
         logging.exception(f"[create_dir_if_none] threw {str(e)}")
         return 1
-
