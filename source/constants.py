@@ -45,6 +45,8 @@ VENT_OUTLINE_COLOR = "#206602"
 # radius components
 VENT_RADIUS_WIDTH_PERC = 0.04
 VENT_RADIUS = WINDOW_WIDTH * VENT_RADIUS_WIDTH_PERC
+# production components
+VENT_PROD_RATE = 2
 
 # food components
 FOOD_COLOR = "#046db0"

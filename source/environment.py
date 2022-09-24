@@ -103,7 +103,7 @@ def create_vents(window: tkinter.Tk, canvas: tkinter.Canvas, n_vents: int) -> Tu
     vent_drawings = {}
     for _ in range(n_vents):
         # save the vents using their memory id
-        vent_object = vent.Vent()
+        vent_object = vent.Vent(prod_rate=constants.VENT_PROD_RATE)
         vent_id = id(vent_object)
         vent_objects[vent_id] = vent_object
         # retrieve vent attributes
@@ -244,6 +244,9 @@ def simulate_cells(
     @param n_vents = number of vents to start with
     @param ideal_seqs = the idealized sequence to compare the cells with
     """
+    # instantiate the food objects
+    food_objects = {}
+    food_drawings = {}
     # create the vents
     vent_objects, vent_drawings = create_vents(
         window=window, canvas=canvas, n_vents=n_vents
@@ -260,6 +263,14 @@ def simulate_cells(
     snapshot.take_snapshot(cell_objects=cell_objects, labels=labels, overwrite=True)
     # simulate their movement
     while True:
+        # loop through the vents
+        for vent_id, vent_object in vent_objects.items():
+            vent_food_objects, vent_food_drawings = vent_object.create_foods(
+                canvas=canvas
+            )
+            food_objects.update(vent_food_objects)
+            food_drawings.update(vent_food_drawings)
+        window.update()
         # move the cells and update the objects
         move_cells(
             window=window,

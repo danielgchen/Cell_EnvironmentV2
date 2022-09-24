@@ -1,11 +1,12 @@
 from typing import List
 import source.constants as constants
+import numpy as np
 
 # define the food class
 class Food:
-    def __init__(self):
+    def __init__(self, position: np.array = constants.INITIAL_POSITION):
         # position
-        self.position = constants.INITIAL_POSITION
+        self.position = position
         # radius
         self.radius = constants.FOOD_RADIUS
         # color
