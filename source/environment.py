@@ -1,3 +1,4 @@
+import numpy as np
 import source.utils as utils
 import source.constants as constants
 import source.vent as vent
@@ -228,6 +229,69 @@ def update_labels(labels: Dict[str, tkinter.Label], n_cells: int):
     labels["cells"]["text"] = f"{n_cells} cells"
 
 
+def process_vents(
+    window: tkinter.Tk,
+    canvas: tkinter.Canvas,
+    vent_objects: Dict,
+    food_objects: Dict,
+    food_drawings: Dict,
+):
+    """
+    updates the food objects and drawings with the new foods from the vents
+
+    @param window = window to draw on
+    @param canvas = canvas to draw in
+    @param vent_objects = vents to get data from
+    @param food_objects = object tracker of food
+    @param food_drawings = canvas drawing tracker of food
+    """
+    # loop through the vents
+    for _, vent_object in vent_objects.items():
+        vent_food_objects, vent_food_drawings = vent_object.create_foods(canvas=canvas)
+        food_objects.update(vent_food_objects)
+        food_drawings.update(vent_food_drawings)
+    window.update()
+
+
+def calc_vent_env(vent_objs: Dict) -> np.array:
+    """
+    computes the single digit resolution map of the currents
+    based on the vents in the current system
+
+    @param vent_objs = dictionary of vent objects to get their positions
+    @returns currentx_map = currents with single number resolution for x axis
+    @returns currenty_map = currents with single number resolution for y axis
+    """
+    # get vent positions
+    vent_positions = np.vstack([vent_obj.get_position() for vent_obj in vent_objs])
+    # get vent radius as a function of power
+    vent_radii = np.array([vent_obj.get_radius() for vent_obj in vent_objs])
+    # instantiate tracking variables
+    currentx_map = np.zeros(shape=(constants.WINDOW_WIDTH, constants.WINDOW_HEIGHT))
+    currenty_map = np.zeros(shape=(constants.WINDOW_WIDTH, constants.WINDOW_HEIGHT))
+    # add in the current vent values
+    for idx in range(currentx_map.shape[0]):
+        for idy in range(currentx_map.shape[1]):
+            # retrieve position
+            position = np.array([idx, idy])
+            # calculate difference from vents
+            differences = vent_positions - position
+            # calculate distances
+            distances = np.linalg.norm(differences, axis=1)
+            # calculate scaling factors
+            scaling_factors = np.array([vent_radii / (distances + 1)]).T
+            # calculate thetas
+            thetas = np.arctan2(differences[:, 1], differences[:, 0])
+            # use thetas to compute unit circle values
+            unit_steps = np.vstack([np.cos(thetas), np.sin(thetas)]).T
+            # finally compute the current, we take negative bc of backwards counting
+            current = -(scaling_factors * unit_steps).sum(0)
+            # save the currents
+            currentx_map[idy, idx] = current[0]
+            currenty_map[idy, idx] = current[1]
+    return (currentx_map, currenty_map)
+
+
 def simulate_cells(
     window: tkinter.Tk,
     canvas: tkinter.Canvas,
@@ -264,13 +328,13 @@ def simulate_cells(
     # simulate their movement
     while True:
         # loop through the vents
-        for vent_id, vent_object in vent_objects.items():
-            vent_food_objects, vent_food_drawings = vent_object.create_foods(
-                canvas=canvas
-            )
-            food_objects.update(vent_food_objects)
-            food_drawings.update(vent_food_drawings)
-        window.update()
+        process_vents(
+            window=window,
+            canvas=canvas,
+            vent_objects=vent_objects,
+            food_objects=food_objects,
+            food_drawings=food_drawings,
+        )
         # move the cells and update the objects
         move_cells(
             window=window,
