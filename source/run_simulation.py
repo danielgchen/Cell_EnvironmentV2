@@ -13,11 +13,13 @@ where death is defined by the loss of all energy and biologic sustainability
 
 def run_simulation(
     n_cells: int = 1,
+    n_vents: int = 1,
 ):
     """
     implementation of the program described above
 
     @param n_cells = number of cells to start with
+    @param n_vents = number of vents to start with
     """
     # create the idealized sequences
     ideal_seqs = environment.create_ideal_seqs()
@@ -40,5 +42,6 @@ def run_simulation(
         window=window,
         canvas=canvas,
         n_cells=n_cells,
+        n_vents=n_vents,
         ideal_seqs=ideal_seqs,
     )

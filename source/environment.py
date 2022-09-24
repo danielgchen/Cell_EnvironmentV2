@@ -1,5 +1,6 @@
 import source.utils as utils
 import source.constants as constants
+import source.vent as vent
 import source.snapshot as snapshot
 import source.cell as cell
 from typing import Dict, Tuple
@@ -83,6 +84,47 @@ def create_cells(
     return (
         cell_objects,
         cell_drawings,
+    )
+
+
+# create vents
+def create_vents(window: tkinter.Tk, canvas: tkinter.Canvas, n_vents: int) -> Tuple:
+    """
+    creates cells for the environment and simulation
+
+    @param window = tkinter window to create a canvas in and update
+    @param canvas = tkinter canvas to draw and manipulate objects in
+    @param n_vents = number of vents to start with
+    @returns vent_objects = map of vent memory id to their objects
+    @returns vent_drawings = map of vent memory id to their canvas drawings
+    """
+    # create the vents
+    vent_objects = {}
+    vent_drawings = {}
+    for _ in range(n_vents):
+        # save the vents using their memory id
+        vent_object = vent.Vent()
+        vent_id = id(vent_object)
+        vent_objects[vent_id] = vent_object
+        # retrieve vent attributes
+        position = vent_object.get_position()
+        radius = vent_object.get_radius()
+        color = vent_object.get_color()
+        # draw the vents
+        vent_drawing = utils.draw_circular_object(
+            canvas=canvas,
+            position=position,
+            radius=radius,
+            fill_color=color,
+            outline_color=constants.VENT_OUTLINE_COLOR,
+        )
+        # save the vent drawing via its memory id
+        vent_drawings[vent_id] = vent_drawing
+    # update the canvas with the vents
+    window.update()
+    return (
+        vent_objects,
+        vent_drawings,
     )
 
 
@@ -187,7 +229,11 @@ def update_labels(labels: Dict[str, tkinter.Label], n_cells: int):
 
 
 def simulate_cells(
-    window: tkinter.Tk, canvas: tkinter.Canvas, n_cells: int, ideal_seqs: Dict[str, str]
+    window: tkinter.Tk,
+    canvas: tkinter.Canvas,
+    n_cells: int,
+    n_vents: int,
+    ideal_seqs: Dict[str, str],
 ):
     """
     creates cells and simulates their evolution and growth
@@ -195,8 +241,13 @@ def simulate_cells(
     @param window = tkinter window to create a canvas in and update
     @param canvas = tkinter canvas to draw and manipulate objects in
     @param n_cells = number of cells to start with
+    @param n_vents = number of vents to start with
     @param ideal_seqs = the idealized sequence to compare the cells with
     """
+    # create the vents
+    vent_objects, vent_drawings = create_vents(
+        window=window, canvas=canvas, n_vents=n_vents
+    )
     # create the cells
     cell_objects, cell_drawings = create_cells(
         window=window, canvas=canvas, n_cells=n_cells, ideal_seqs=ideal_seqs
