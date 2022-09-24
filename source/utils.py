@@ -324,3 +324,21 @@ def create_dir_if_none(dirname: str, overwrite: bool):
     except Exception as e:
         logging.exception(f"[create_dir_if_none] threw {str(e)}")
         return 1
+
+
+# generates a random position on the map
+def gen_position(rng: Optional[np.random._generator.Generator] = None) -> np.array:
+    """
+    generates a random position on the window
+
+    @param rng = random number generator to create the genome
+    @returns position = numpy array of the random coordinates
+    """
+    # configure parameters
+    rng = constants.DEFAULT_RNG if rng is None else rng
+    # retrieve the indexes for x and y axes
+    idx = rng.uniform(0, constants.WINDOW_WIDTH)
+    idy = rng.uniform(0, constants.WINDOW_HEIGHT)
+    # combine into a position
+    position = np.array([idx, idy])
+    return position

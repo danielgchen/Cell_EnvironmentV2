@@ -253,19 +253,20 @@ def process_vents(
     window.update()
 
 
-def calc_vent_env(vent_objs: Dict) -> np.array:
+def calc_currents(vent_objects: Dict) -> np.array:
     """
     computes the single digit resolution map of the currents
     based on the vents in the current system
 
-    @param vent_objs = dictionary of vent objects to get their positions
+    @param vent_objects = dictionary of vent objects to get their positions
     @returns currentx_map = currents with single number resolution for x axis
     @returns currenty_map = currents with single number resolution for y axis
     """
     # get vent positions
-    vent_positions = np.vstack([vent_obj.get_position() for vent_obj in vent_objs])
+    tup = [vent_object.get_position() for vent_object in vent_objects.values()]
+    vent_positions = np.vstack(tup=tup)
     # get vent radius as a function of power
-    vent_radii = np.array([vent_obj.get_radius() for vent_obj in vent_objs])
+    vent_radii = np.array([vent_obj.get_radius() for vent_obj in vent_objects.values()])
     # instantiate tracking variables
     currentx_map = np.zeros(shape=(constants.WINDOW_WIDTH, constants.WINDOW_HEIGHT))
     currenty_map = np.zeros(shape=(constants.WINDOW_WIDTH, constants.WINDOW_HEIGHT))
@@ -290,6 +291,41 @@ def calc_vent_env(vent_objs: Dict) -> np.array:
             currentx_map[idy, idx] = current[0]
             currenty_map[idy, idx] = current[1]
     return (currentx_map, currenty_map)
+
+
+def diffuse_foods(
+    window: tkinter.Tk,
+    canvas: tkinter.Canvas,
+    food_objects: Dict,
+    food_drawings: Dict,
+    currentx_map: np.array,
+    currenty_map: np.array,
+):
+    """
+    @param window = window to draw on
+    @param canvas = canvas to draw in
+    @param food_objects = food objects to get data from
+    @param food_drawings = drawings to update
+    @param currentx_map = currents to follow for axis x
+    @param currenty_map = currents to follow for axis y
+    """
+    # move each food
+    for food_id, food_object in food_objects.items():
+        # calculate the movement
+        food_object.move(currentx_map=currentx_map, currenty_map=currenty_map)
+        # retrieve food attributes
+        position = food_object.get_position()
+        radius = food_object.get_radius()
+        food_drawing = food_drawings[food_id]
+        # update the drawing
+        utils.update_circular_object(
+            canvas=canvas,
+            position=position,
+            radius=radius,
+            drawing=food_drawing,
+        )
+    # update the window
+    window.update()
 
 
 def simulate_cells(
@@ -325,6 +361,8 @@ def simulate_cells(
     update_labels(labels=labels, n_cells=len(cell_objects))
     # take the initial snapshot
     snapshot.take_snapshot(cell_objects=cell_objects, labels=labels, overwrite=True)
+    # calculate the currents
+    currentx_map, currenty_map = calc_currents(vent_objects=vent_objects)
     # simulate their movement
     while True:
         # loop through the vents
@@ -334,6 +372,15 @@ def simulate_cells(
             vent_objects=vent_objects,
             food_objects=food_objects,
             food_drawings=food_drawings,
+        )
+        # process food diffusion
+        diffuse_foods(
+            window=window,
+            canvas=canvas,
+            food_objects=food_objects,
+            food_drawings=food_drawings,
+            currentx_map=currentx_map,
+            currenty_map=currenty_map,
         )
         # move the cells and update the objects
         move_cells(

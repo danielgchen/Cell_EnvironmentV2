@@ -12,6 +12,23 @@ class Food:
         # color
         self.color = constants.FOOD_COLOR
 
+    # movement functions
+    def move(self, currentx_map: np.array, currenty_map: np.array) -> None:
+        """
+        movement magnitude is determined by self.move_step_size energy cost
+        is determined by step size multiplied by trait score for movement
+        as we consider step size to require a linear higher cost
+        """
+        # calculate position inputs
+        idx, idy = round(self.position[0]), round(self.position[1])
+        # retrieve the relevant deltas
+        deltas = np.array([currentx_map[idx, idy]], currenty_map[idx, idy])
+        # calculate new positions
+        position_hat = self.position + deltas
+        # TODO: add canvas based adjustments
+        # reassign position to new positions
+        self.position = position_hat
+
     # get functions
     def get_position(self) -> List[float]:
         """

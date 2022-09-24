@@ -11,7 +11,7 @@ class Vent:
         @param prod_rate = production rate for food
         """
         # position
-        self.position = constants.INITIAL_POSITION
+        self.position = utils.gen_position()
         # radius
         self.radius = constants.VENT_RADIUS
         # color
