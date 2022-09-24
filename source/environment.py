@@ -214,10 +214,11 @@ def create_labels(window: tkinter.Tk):
     return labels
 
 
-def update_labels(labels: Dict[str, tkinter.Label], n_cells: int):
+def update_labels(window: tkinter.Tk, labels: Dict[str, tkinter.Label], n_cells: int):
     """
     updates the labels with new round numbers and new n-cells
 
+    @param window = window labels reside in
     @param labels = map of labels with key being the title of each one
     @param n_cells = new number of cells present in the environment
     """
@@ -227,6 +228,7 @@ def update_labels(labels: Dict[str, tkinter.Label], n_cells: int):
     labels["rounds"]["text"] = f"{round_num + 1} rounds"
     # update the number of cells
     labels["cells"]["text"] = f"{n_cells} cells"
+    window.update()
 
 
 def process_vents(
@@ -286,7 +288,7 @@ def calc_currents(vent_objects: Dict) -> np.array:
             # use thetas to compute unit circle values
             unit_steps = np.vstack([np.cos(thetas), np.sin(thetas)]).T
             # finally compute the current, we take negative bc of backwards counting
-            current = -(scaling_factors * unit_steps).sum(0)
+            current = -(scaling_factors * unit_steps).sum(0) * constants.CURRENT_SCALER
             # save the currents
             currentx_map[idy, idx] = current[0]
             currenty_map[idy, idx] = current[1]
@@ -358,7 +360,7 @@ def simulate_cells(
     # create the labels
     labels = create_labels(window=window)
     # update the labels
-    update_labels(labels=labels, n_cells=len(cell_objects))
+    update_labels(window=window, labels=labels, n_cells=len(cell_objects))
     # take the initial snapshot
     snapshot.take_snapshot(cell_objects=cell_objects, labels=labels, overwrite=True)
     # calculate the currents
@@ -397,7 +399,7 @@ def simulate_cells(
             cell_drawings=cell_drawings,
         )
         # update the labels
-        update_labels(labels=labels, n_cells=len(cell_objects))
+        update_labels(window=window, labels=labels, n_cells=len(cell_objects))
         # take the general snapshot if there are cells
         if len(cell_objects) > 0:
             snapshot.take_snapshot(

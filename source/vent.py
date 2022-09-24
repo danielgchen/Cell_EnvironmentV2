@@ -1,3 +1,4 @@
+import numpy as np
 import tkinter
 from typing import List, Tuple
 import source.constants as constants
@@ -33,8 +34,26 @@ class Vent:
         food_drawings = {}
         # loop through the n to produce
         for _ in range(self.prod_rate):
+            # gather the jittered position parameters
+            base_position = self.position
+            distribution_kwargs = {
+                "loc1": -self.radius,
+                "scale1": self.radius / 2,
+                "loc2": self.radius,
+                "scale2": self.radius / 2,
+            }
+            jitteredx = utils.gen_jitter(
+                number=base_position[0],
+                distribution="bimodal",
+                kwargs=distribution_kwargs,
+            )
+            jitteredy = utils.gen_jitter(
+                number=base_position[1],
+                distribution="bimodal",
+                kwargs=distribution_kwargs,
+            )
             # create the object
-            food_object = food.Food(position=self.position)
+            food_object = food.Food(position=np.array([jitteredx, jitteredy]))
             # get the id
             food_id = id(food_object)
             # draw the food

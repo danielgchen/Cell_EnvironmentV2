@@ -22,7 +22,7 @@ class Food:
         # calculate position inputs
         idx, idy = round(self.position[0]), round(self.position[1])
         # retrieve the relevant deltas
-        deltas = np.array([currentx_map[idx, idy]], currenty_map[idx, idy])
+        deltas = np.array([currentx_map[idy, idx], currenty_map[idy, idx]])
         # calculate new positions
         position_hat = self.position + deltas
         # TODO: add canvas based adjustments

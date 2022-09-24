@@ -66,3 +66,6 @@ DEFAULT_OUTLINE_COLOR = "#000000"
 # snapshot filename
 SNAPSHOT_DIRNAME = "snapshots"
 SNAPSHOT_FILENAME_PREFIX = "snap_"
+
+# current components
+CURRENT_SCALER = 3
