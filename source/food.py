@@ -1,5 +1,6 @@
 from typing import List
 import source.constants as constants
+import source.utils as utils
 import numpy as np
 
 # define the food class
@@ -8,7 +9,13 @@ class Food:
         # position
         self.position = position
         # radius
-        self.radius = constants.FOOD_RADIUS
+        self.radius = utils.gen_distribution(
+            distribution="normal",
+            kwargs={
+                "loc": constants.FOOD_RADIUS_MEAN,
+                "scale": constants.FOOD_RADIUS_STD,
+            },
+        )
         # color
         self.color = constants.FOOD_COLOR
 
@@ -25,7 +32,13 @@ class Food:
         deltas = np.array([currentx_map[idy, idx], currenty_map[idy, idx]])
         # calculate new positions
         position_hat = self.position + deltas
-        # TODO: add canvas based adjustments
+        # add canvas based adjustments
+        position_hat[0] = utils.limit_input(
+            number=position_hat[0], vmin=0, vmax=constants.WINDOW_WIDTH - 1
+        )
+        position_hat[1] = utils.limit_input(
+            number=position_hat[1], vmin=0, vmax=constants.WINDOW_HEIGHT - 1
+        )
         # reassign position to new positions
         self.position = position_hat
 

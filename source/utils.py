@@ -380,3 +380,33 @@ def gen_distribution(
             # utilizes `loc`, `scale`
             number = rng.normal(loc=kwargs["loc2"], scale=kwargs["scale2"], size=1)[0]
     return number
+
+
+# set limits on the given data
+def limit_input(number: float, vmin: float, vmax: float) -> float:
+    """
+    limits the given number to vmin and vmax
+
+    @param number = the number to correct
+    @param vmin = the minimum value the number can be
+    @param vmax = the maximum value the number can be
+    @returns the limited number post correction
+    """
+    # fix the number if it is smaller
+    limited_number = number
+    # keep looping until the number is perfect for example
+    # vmin = -5, vmax = 5, number = -50 then it'll cycle to 5 - (-5 -- 50)
+    # which gets us 5 - 45 = -40 this will continue to cycle to 0
+    while limited_number < vmin or limited_number > vmax:
+        # if the number is too small calculate the difference and
+        # subtract it from the max to get the new value
+        if limited_number < vmin:
+            limited_number = vmax - (vmin - limited_number)
+        # if the number is too large then calculate the difference and
+        # add the overhead to the minimum to get the new value
+        elif limited_number > vmax:
+            limited_number = vmin + (limited_number - vmax)
+        # this should never happen but if it is equal then leave the loop
+        else:
+            break
+    return limited_number
