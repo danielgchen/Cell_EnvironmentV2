@@ -14,7 +14,13 @@ class Vent:
         # position
         self.position = utils.gen_position()
         # radius
-        self.radius = constants.VENT_RADIUS
+        self.radius = utils.gen_distribution(
+            distribution="normal",
+            kwargs={
+                "loc": constants.VENT_RADIUS_MEAN,
+                "scale": constants.VENT_RADIUS_STD,
+            },
+        )
         # color
         self.color = constants.VENT_COLOR
         # food
@@ -42,13 +48,11 @@ class Vent:
                 "loc2": self.radius,
                 "scale2": self.radius / 2,
             }
-            jitteredx = utils.gen_jitter(
-                number=base_position[0],
+            jitteredx = base_position[0] + utils.gen_distribution(
                 distribution="bimodal",
                 kwargs=distribution_kwargs,
             )
-            jitteredy = utils.gen_jitter(
-                number=base_position[1],
+            jitteredy = base_position[1] + utils.gen_distribution(
                 distribution="bimodal",
                 kwargs=distribution_kwargs,
             )

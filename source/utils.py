@@ -344,43 +344,39 @@ def gen_position(rng: Optional[np.random._generator.Generator] = None) -> np.arr
     return position
 
 
-# generates a jitter
-def gen_jitter(
-    number: float,
+# generates a number from a specified distribution
+def gen_distribution(
     distribution: str,
     kwargs: Dict,
     rng: Optional[np.random._generator.Generator] = None,
 ) -> float:
     """
-    generates a jitter to a given distribution
+    generates a number from a given distribution
 
-    @param number = input number to perform a jitter
     @param distribution = name of the distribution to utilize
     @param kwargs = any other key word arguments to be inputted to distributions
-    @returns jittered_number = jittered number
+    @returns number = number randomly selected from distribution
     """
     # configure parameters
     rng = constants.DEFAULT_RNG if rng is None else rng
-    # instantiate jitter
-    jitter = 0
+    # default number to 0
+    number = 0
     # service uniform
     if distribution == "uniform":
         # utilizes `low`, `high`
-        jitter = rng.uniform(low=kwargs["low"], high=kwargs["high"], size=1)[0]
+        number = rng.uniform(low=kwargs["low"], high=kwargs["high"], size=1)[0]
     # service normal
     elif distribution == "normal":
         # utilizes `loc`, `scale`
-        jitter = rng.normal(loc=kwargs["loc"], scale=kwargs["scale"], size=1)[0]
+        number = rng.normal(loc=kwargs["loc"], scale=kwargs["scale"], size=1)[0]
     # service bimodal
     elif distribution == "bimodal":
         # decided if it is right or left
         is_left = rng.uniform(low=0, high=1) >= 0.5
         if is_left:
             # utilizes `loc`, `scale`
-            jitter = rng.normal(loc=kwargs["loc1"], scale=kwargs["scale1"], size=1)[0]
+            number = rng.normal(loc=kwargs["loc1"], scale=kwargs["scale1"], size=1)[0]
         else:
             # utilizes `loc`, `scale`
-            jitter = rng.normal(loc=kwargs["loc2"], scale=kwargs["scale2"], size=1)[0]
-    # compute jittered number
-    jittered_number = jitter + number
-    return jittered_number
+            number = rng.normal(loc=kwargs["loc2"], scale=kwargs["scale2"], size=1)[0]
+    return number
