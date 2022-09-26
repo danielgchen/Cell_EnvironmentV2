@@ -1,3 +1,4 @@
+from multiprocessing.sharedctypes import Value
 import numpy as np
 import source.utils as utils
 import source.constants as constants
@@ -255,7 +256,7 @@ def process_vents(
     window.update()
 
 
-def calc_currents(vent_objects: Dict) -> np.array:
+def calc_currents_flat(vent_objects: Dict) -> np.array:
     """
     computes the single digit resolution map of the currents
     based on the vents in the current system
@@ -293,6 +294,131 @@ def calc_currents(vent_objects: Dict) -> np.array:
             currentx_map[idy, idx] = current[0]
             currenty_map[idy, idx] = current[1]
     return (currentx_map, currenty_map)
+
+
+def calc_currents_round(vent_objects: Dict) -> np.array:
+    """
+    computes the single digit resolution map of the currents
+    based on the vents in the current system assuming a circular world
+
+    @param vent_objects = dictionary of vent objects to get their positions
+    @returns currentx_map = currents with single number resolution for x axis
+    @returns currenty_map = currents with single number resolution for y axis
+    """
+    # get vent positions with triple 3 x 3 format
+    def _adjust_position(vent_object: Dict, multiplier: Tuple[int]):
+        # unpack multiplier
+        multiplierx, multipliery = multiplier
+        # instantiate tracker
+        multiplied_positions = []
+        # add y
+        y = vent_object.get_position()[1] + multipliery * constants.WINDOW_HEIGHT
+        multiplied_positions.append(y)
+        # add x
+        x = vent_object.get_position()[0] + multiplierx * constants.WINDOW_WIDTH
+        multiplied_positions.append(x)
+        # convert to numpy array
+        return np.array(multiplied_positions)
+
+    # define multipliers for the x belt
+    multipliersx = ((0, 0), (0, 1), (0, 2))
+    # compute the vent positions for the five tiles of the 3 x 3 grid
+    tup = [
+        _adjust_position(vent_object=vent_object, multiplier=multiplier)
+        for multiplier in multipliersx
+        for vent_object in vent_objects.values()
+    ]
+    vent_positionsx = np.vstack(tup=tup)
+    # define multipliers for the y belt
+    multipliersy = ((0, 0), (1, 0), (2, 0))
+    # compute the vent positions for the five tiles of the 3 x 3 grid
+    tup = [
+        _adjust_position(vent_object=vent_object, multiplier=multiplier)
+        for multiplier in multipliersy
+        for vent_object in vent_objects.values()
+    ]
+    vent_positionsy = np.vstack(tup=tup)
+
+    # get vent radius as a function of power three times for the + part of the 3 x 3 grid
+    # split into the x belt and y belt
+    vent_radii = np.array(
+        [vent_obj.get_radius() for _ in range(3) for vent_obj in vent_objects.values()]
+    )
+
+    # instantiate tracking variables but create three times the actual size
+    currentx_map = np.zeros(shape=(constants.WINDOW_HEIGHT, constants.WINDOW_WIDTH * 3))
+    currenty_map = np.zeros(shape=(constants.WINDOW_HEIGHT * 3, constants.WINDOW_WIDTH))
+
+    # add in the current vent x values
+    for idy in range(currentx_map.shape[0]):
+        for idx in range(currentx_map.shape[1]):
+            # retrieve position
+            position = np.array([idx, idy])
+            # calculate difference from vents
+            differencesx = vent_positionsx - position
+            # calculate distances
+            distancesx = np.linalg.norm(differencesx, axis=1)
+            # calculate scaling factors
+            scaling_factorsx = np.array([vent_radii / (distancesx + 1)]).T
+            # calculate thetas
+            thetasx = np.arctan2(differencesx[:, 1], differencesx[:, 0])
+            # use thetas to compute unit circle values
+            unit_stepsx = np.vstack([np.cos(thetasx), np.sin(thetasx)]).T
+            # finally compute the current, we take negative bc of backwards counting
+            currentx = (
+                -(scaling_factorsx * unit_stepsx).sum(0) * constants.CURRENT_SCALER
+            )
+            # save the currents
+            currentx_map[idy, idx] = currentx[0]
+    # add in the current vent y values
+    for idy in range(currenty_map.shape[0]):
+        for idx in range(currenty_map.shape[1]):
+            # retrieve position
+            position = np.array([idx, idy])
+            # calculate difference from vents
+            differencesy = vent_positionsy - position
+            # calculate distances
+            distancesy = np.linalg.norm(differencesy, axis=1)
+            # calculate scaling factors
+            scaling_factorsy = np.array([vent_radii / (distancesy + 1)]).T
+            # calculate thetas
+            thetasy = np.arctan2(differencesy[:, 1], differencesy[:, 0])
+            # use thetas to compute unit circle values
+            unit_stepsy = np.vstack([np.cos(thetasy), np.sin(thetasy)]).T
+            # finally compute the current, we take negative bc of backwards counting
+            currenty = (
+                -(scaling_factorsy * unit_stepsy).sum(0) * constants.CURRENT_SCALER
+            )
+            # save the currents
+            currenty_map[idy, idx] = currenty[1]
+    # subset to reality
+    currentx_map = currentx_map[:, constants.WINDOW_WIDTH : constants.WINDOW_WIDTH * 2]
+    currenty_map = currenty_map[
+        constants.WINDOW_HEIGHT : constants.WINDOW_HEIGHT * 2, :
+    ]
+    # flip to what we want it to be indexed by x, y
+    tmp_map = currentx_map.T
+    currentx_map = currenty_map.T
+    currenty_map = tmp_map
+    return (currentx_map, currenty_map)
+
+
+def calc_currents(vent_objects: Dict) -> np.array:
+    """
+    computes the single digit resolution map of the currents
+    based on the vents in the current system with the constants world assumption
+
+    @param vent_objects = dictionary of vent objects to get their positions
+    @returns currentx_map = currents with single number resolution for x axis
+    @returns currenty_map = currents with single number resolution for y axis
+    """
+    # assuming a flat world
+    if constants.WORLD_SHAPE == "flat":
+        return calc_currents_flat(vent_objects=vent_objects)
+    elif constants.WORLD_SHAPE == "round":
+        return calc_currents_round(vent_objects=vent_objects)
+    else:
+        raise ValueError(f"constants.WORLD_SHAPE={constants.WORLD_SHAPE} is erroneous")
 
 
 def diffuse_foods(

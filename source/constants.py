@@ -73,3 +73,6 @@ SNAPSHOT_FILENAME_PREFIX = "snap_"
 
 # current components
 CURRENT_SCALER = 3
+
+# define the world
+WORLD_SHAPE = "round"
