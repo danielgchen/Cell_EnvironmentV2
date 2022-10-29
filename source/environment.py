@@ -8,9 +8,22 @@ import source.cell as cell
 from typing import Dict, Tuple
 import time
 import tkinter
+import logging
+
+# create debugger
+logging.basicConfig(filename="Log.log", level=logging.INFO)
 
 # create tkinter based canvas
 def create_canvas():
+    """
+    creates canvas for all elements to live in and utilizes constants
+    to create this canvas and window using Tkinter
+
+    @returns window = window canvas lives in
+    @returns canvas = canvas to draw objects in
+    """
+    # debugging message
+    logging.info("creating canvas")
     # instantiate application window
     window = tkinter.Tk()
     # name application window
@@ -37,6 +50,8 @@ def create_ideal_seqs():
 
     @returns ideal_seqs = idealized sequences that are randomly generated
     """
+    # debugging message
+    logging.info("creating ideal sequences")
     ideal_seqs = {
         "digest": utils.gen_genome(size=constants.DIGEST_SIZE),
         "move": utils.gen_genome(size=constants.MOVE_SIZE),
@@ -59,6 +74,8 @@ def create_cells(
     @returns cell_objects = map of cell memory id to their objects
     @returns cell_drawings = map of cell memory id to their canvas drawings
     """
+    # debugging message
+    logging.info("creating cells")
     # create the cells
     cell_objects = {}
     cell_drawings = {}
@@ -100,6 +117,8 @@ def create_vents(window: tkinter.Tk, canvas: tkinter.Canvas, n_vents: int) -> Tu
     @returns vent_objects = map of vent memory id to their objects
     @returns vent_drawings = map of vent memory id to their canvas drawings
     """
+    # debugging message
+    logging.info("creating vents")
     # create the vents
     vent_objects = {}
     vent_drawings = {}
@@ -144,6 +163,8 @@ def move_cells(
     @param cell_objects = map of cell memory id to their objects
     @param cell_drawings = map of cell memory id to their canvas drawings
     """
+    # debugging message
+    logging.info("moving cells")
     # move each cell
     for cell_id, cell_object in cell_objects.items():
         # calculate the movement
@@ -177,6 +198,8 @@ def reap_cells(
     @param cell_objects = map of cell memory id to their objects
     @param cell_drawings = map of cell memory id to their canvas drawings
     """
+    # debugging message
+    logging.info("checking health of all cells and reaping where necessary")
     # instantiate new tracking objects
     new_cell_objects = {}
     new_cell_drawings = {}
@@ -204,6 +227,8 @@ def create_labels(window: tkinter.Tk):
     @param window = tkinter window to create a canvas in and update
     @returns labels = map of labels with key being the title of each one
     """
+    # debugging message
+    logging.info("creating labels")
     # create tracker
     labels = {}
     # add the round label
@@ -223,6 +248,8 @@ def update_labels(window: tkinter.Tk, labels: Dict[str, tkinter.Label], n_cells:
     @param labels = map of labels with key being the title of each one
     @param n_cells = new number of cells present in the environment
     """
+    # debugging message
+    logging.info("updating labels")
     # get the current round number
     round_num = int(labels["rounds"]["text"].split(" ")[0])
     # update the round number
@@ -248,6 +275,8 @@ def process_vents(
     @param food_objects = object tracker of food
     @param food_drawings = canvas drawing tracker of food
     """
+    # debugging message
+    logging.info("updating vents with new foods")
     # loop through the vents
     for _, vent_object in vent_objects.items():
         vent_food_objects, vent_food_drawings = vent_object.create_foods(canvas=canvas)
@@ -265,6 +294,8 @@ def calc_currents_flat(vent_objects: Dict) -> np.array:
     @returns currentx_map = currents with single number resolution for x axis
     @returns currenty_map = currents with single number resolution for y axis
     """
+    # debugging message
+    logging.info("beginning flat current calculations")
     # get vent positions
     tup = [vent_object.get_position() for vent_object in vent_objects.values()]
     vent_positions = np.vstack(tup=tup)
@@ -305,6 +336,8 @@ def calc_currents_round(vent_objects: Dict) -> np.array:
     @returns currentx_map = currents with single number resolution for x axis
     @returns currenty_map = currents with single number resolution for y axis
     """
+    # debugging message
+    logging.info("beginning round earth current calculations")
     # get vent positions with triple 3 x 3 format
     def _adjust_position(vent_object: Dict, multiplier: Tuple[int]):
         # unpack multiplier
@@ -412,6 +445,8 @@ def calc_currents(vent_objects: Dict) -> np.array:
     @returns currentx_map = currents with single number resolution for x axis
     @returns currenty_map = currents with single number resolution for y axis
     """
+    # debugging message
+    logging.info("calculating currents depending on world type")
     # assuming a flat world
     if constants.WORLD_SHAPE == "flat":
         return calc_currents_flat(vent_objects=vent_objects)
@@ -437,6 +472,8 @@ def diffuse_foods(
     @param currentx_map = currents to follow for axis x
     @param currenty_map = currents to follow for axis y
     """
+    # debugging message
+    logging.info("diffusing foods")
     # move each food
     for food_id, food_object in food_objects.items():
         # calculate the movement
@@ -472,6 +509,8 @@ def simulate_cells(
     @param n_vents = number of vents to start with
     @param ideal_seqs = the idealized sequence to compare the cells with
     """
+    # debugging message
+    logging.info("beginning overall cell simulation")
     # instantiate the food objects
     food_objects = {}
     food_drawings = {}
@@ -493,6 +532,8 @@ def simulate_cells(
     currentx_map, currenty_map = calc_currents(vent_objects=vent_objects)
     # simulate their movement
     while True:
+        # debugging message
+        logging.info("beginning next round")
         # loop through the vents
         process_vents(
             window=window,

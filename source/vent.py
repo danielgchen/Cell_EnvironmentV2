@@ -56,6 +56,13 @@ class Vent:
                 distribution="bimodal",
                 kwargs=distribution_kwargs,
             )
+            # limit the jitter
+            jitteredx = utils.limit_input(
+                number=jitteredx, vmin=0, vmax=constants.WINDOW_WIDTH - 1
+            )
+            jitteredy = utils.limit_input(
+                number=jitteredy, vmin=0, vmax=constants.WINDOW_HEIGHT - 1
+            )
             # create the object
             food_object = food.Food(position=np.array([jitteredx, jitteredy]))
             # get the id
